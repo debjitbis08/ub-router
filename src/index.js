@@ -60,7 +60,10 @@ var Routes = {};
     };
 
     var matchDynamicPiece = function (type, data) {
-        return fromPathPiece(type)(data);
+        if (!pieceTypes[type]) {
+            throw Error ('Piece type ' + type + 'is unknown.');
+        }
+        return fromPathPiece(pieceTypes[type])(data);
     };
 
     var match = function(f) {
