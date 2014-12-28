@@ -10,19 +10,33 @@ var Routes = {};
     var mode = null;
     var root = '/';
     var interval = null;
-    var pieceTypes = {};
 
     function PathPiece(fromPathPiece, toPathPiece) {
         this.fromPathPiece = fromPathPiece;
         this.toPathPiece = toPathPiece;
     }
 
-    var toPathPiece = function (dict) { 
-        return dict.toPathPiece; 
+    var toPathPiece = function (type) { 
+        return type.toPathPiece; 
     };
 
-    var fromPathPiece = function (dict) {
-        return dict.fromPathPiece;
+    var fromPathPiece = function (type) {
+        return type.fromPathPiece;
+    };
+
+    var id = function (a) { return a; };
+
+    var StringP = new PathPiece(id, id);
+    var NumberP = new PathPiece(function (piece) {
+        var n = parseInt(piece, 10);
+        if (isNaN(n)) { return null; } else { return n; }
+    }, function (n) {
+        return String(n);
+    });
+
+    var pieceTypes = {
+        "String": StringP,
+        "Number": NumberP
     };
     
     var getFragment = function() {
@@ -50,8 +64,10 @@ var Routes = {};
         return this;
     };
 
-    var pieces = function (pieceTyp) {
-        pieceTypes = pieceTyp;
+    var pieces = function (customPieces) {
+        Object.keys(customPieces).forEach(function (pieceName) {
+            pieceTypes[pieceName] = customPieces[pieceName];
+        });
     };
 
     var add = function(route, resource) {
@@ -66,27 +82,41 @@ var Routes = {};
         return fromPathPiece(pieceTypes[type])(data);
     };
 
+    var toPieces = function (fragment) {
+        return fragment.split('/');
+    };
+
     var match = function(f) {
         var fragment = f || getFragment();
         var pieces = toPieces(fragment);
         var values = [];
         var value;
+        var staticFail = false;
+        var dynamicFail = false;
 
         for(var i=0; i < routes.length; i++) {
+            staticFail = false;
             for (var j = 0; j < routes[i].pieces.length; j++) {
                 if (routes[i].pieces[j].match(/^#/) !== null) {
                     value = matchDynamicPiece(routes[i].pieces[j].match(/^#(.*)/)[1], pieces[j]);
-                    if (value === null) { break; }
+                    if (value === null) { dynamicFail = true; break; }
                     values.push(value);
                 } else if (routes[i].pieces[j].match(pieces[j]) === null) {
+                    staticFail = true;
                     break;
                 }
             }
 
-            return routes[i].resource.apply(null, values);
+            if ((!staticFail && !dynamicFail) || values.length) {
+                return routes[i].resource.apply(null, values);
+            }
         }
 
         return null;
+    };
+
+    var show404 = function () {
+        alert("Error 404: Page not found!");
     };
 
     var listen = function() {
@@ -117,6 +147,7 @@ var Routes = {};
     };
 
     Routes = {
+        config: config,
         pieces: pieces,
         add: add,
         listen: listen,
