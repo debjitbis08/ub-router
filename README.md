@@ -3,8 +3,10 @@ ub-router
 
 A front-end router with path segment validation.
 
-Example
--------
+Examples
+--------
+
+###Basic Usage
 
 ```javascript
 var StaticR = function () {
@@ -36,13 +38,15 @@ Routes
  * "page/two" is invalid
  * "page/three" is valid
  */
+```
 
-/**
- * To create a new PathPiece data type
- * use the pathPiece function.
- * It will also be available in the Routes.types
- * namespace for future use.
- */
+###Adding a custom path piece data type
+
+To create a new PathPiece data type use the pathPiece
+function. It will also be available in the Routes.types
+namespace for future use.
+
+```javascript
 Routes.pathPiece("Natural", function (piece) {
     var n = Routes.fromPathPiece(Routes.types.Integer)(piece);
     if (n === null || n < 0) { return null; } else { return n; }
