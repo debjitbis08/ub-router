@@ -38,7 +38,7 @@ var Routes = {};
     }, function (n) {
         return String(n);
     });
-    pathPiece("Natural", function () {
+    pathPiece("Integer", function () {
         var n = Number(piece);
         if (piece === '' ||
             isNaN(n) ||
