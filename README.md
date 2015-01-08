@@ -36,4 +36,17 @@ Routes
  * "page/two" is invalid
  * "page/three" is valid
  */
+
+/**
+ * To create a new PathPiece data type
+ * create use the pathPiece function.
+ * It will also available in the Routes.types
+ * namespace for future use.
+ */
+Routes.pathPiece("Natural", function (piece) {
+    var n = Routes.fromPathPiece(Routes.types.Integer)(piece);
+    if (n === null || n < 0) { return null; } else { return n; }
+}, function (n) {
+    return String(n);
+});
 ```
