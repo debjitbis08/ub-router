@@ -3,13 +3,13 @@
 var Routes = {};
 
 (function () {
-
     "use strict";
 
     var routes = [];
     var mode = null;
     var root = '/';
     var interval = null;
+    var pieceTypes = {};
 
     function PathPiece(fromPathPiece, toPathPiece) {
         this.fromPathPiece = fromPathPiece;
@@ -26,18 +26,27 @@ var Routes = {};
 
     var id = function (a) { return a; };
 
-    var StringP = new PathPiece(id, id);
-    var NumberP = new PathPiece(function (piece) {
+    var pathPiece = function(name, fromPathPiece, toPathPiece) {
+        var PieceP = new PathPiece(fromPathPiece, toPathPiece);
+        pieceTypes[name] = PieceP;
+    };
+
+    pathPiece("String", id, id);
+    pathPiece("Number", function (piece) {
         var n = parseInt(piece, 10);
         if (isNaN(n)) { return null; } else { return n; }
     }, function (n) {
         return String(n);
     });
-
-    var pieceTypes = {
-        "String": StringP,
-        "Number": NumberP
-    };
+    pathPiece("Natural", function () {
+        var n = Number(piece);
+        if (piece === '' ||
+            isNaN(n) ||
+            n < 0 ||
+            parseInt(n) !== n) { return null; } else { return n; }
+    }, function () {
+        return String(n);
+    });
     
     var getFragment = function() {
         var fragment = '';
@@ -152,7 +161,10 @@ var Routes = {};
         add: add,
         listen: listen,
         flush: flush,
+        fromPathPiece: fromPathPiece,
+        toPathPiece: toPathPiece,
 
-        PathPiece: PathPiece
+        PathPiece: PathPiece,
+        types: pieceTypes
     };
 })();
