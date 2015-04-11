@@ -38,13 +38,13 @@ var Routes = {};
     }, function (n) {
         return String(n);
     });
-    pathPiece("Integer", function () {
+    pathPiece("Integer", function (piece) {
         var n = Number(piece);
         if (piece === '' ||
             isNaN(n) ||
             n < 0 ||
             parseInt(n) !== n) { return null; } else { return n; }
-    }, function () {
+    }, function (n) {
         return String(n);
     });
     
@@ -129,18 +129,17 @@ var Routes = {};
     };
 
     var listen = function() {
-        var self = this;
-        var resouceObj;
+        var resourceFn;
         var current = getFragment();
         var fn = function() {
             if(current !== getFragment()) {
                 current = getFragment();
-                resouceObj = match(current);
+                resourceFn = match(current);
                 
-                if (resouceObj === null) {
+                if (resourceFn === null) {
                     show404();
                 } else {
-                    resouceObj.handle();
+                    resourceFn();
                 }
             }
         };

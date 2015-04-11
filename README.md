@@ -10,22 +10,18 @@ Examples
 
 ```javascript
 var StaticR = function () {
-    var handle = function () {
+    return function handle() {
         var el = document.getElementById("content");
         el.innerHTML = "Static 3";
     };
-    
-    return { handle: handle };
 };
 
 var CountR = function (n) {
     var map = [ "One", "Two" ];
-    var handle = function () {
+    return function handle() {
         var el = document.getElementById("content");
         el.innerHTML = map[n - 1];
     };
-    
-    return { handle: handle };
 };
 
 Routes
@@ -53,4 +49,8 @@ Routes.pathPiece("Natural", function (piece) {
 }, function (n) {
     return String(n);
 });
+
+Routes
+    .add("page/#Natural", CountR)
+    .listen();
 ```
