@@ -43,8 +43,8 @@ function. It will also be available in the Routes.types
 namespace for future use.
 
 ```javascript
-Routes.pathPiece("Natural", function (piece) {
-    var n = Routes.fromPathPiece(Routes.types.Integer)(piece);
+Routes.registerPathPiece("Natural", function (piece) {
+    var n = Routes.types.Integer.fromPathPiece(piece);
     if (n === null || n < 0) { return null; } else { return n; }
 }, function (n) {
     return String(n);

@@ -8,7 +8,12 @@
     <a href="#/page/three">Three</a>
 
     <span id="content"></span>
-    <script src="../src/index.js"></script>
-    <script src="basic.js"></script>
+    <!--<script src="../src/index.js"></script>-->
+    <!--<script src="basic.js"></script>-->
+    <script src="../jspm_packages/system.js"></script>
+    <script src="../config.js"></script>
+    <script>
+        System.import('example/basic');
+    </script>
 </body>
 </html>
